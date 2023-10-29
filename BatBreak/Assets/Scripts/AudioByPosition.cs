@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -6,7 +7,8 @@ public class AudioByPosition : MonoBehaviour
 {
     public GameObject listenObject;  // 引用玩家对象
     private AudioSource audioSource;
-
+    
+    [Range(0.01f, 0.99f)] public float pitchPercentScale = 0.2f;
     // 设定频率范围
     public float minPitch = 0.5f;
     public float maxPitch = 1.5f;
@@ -32,6 +34,11 @@ public class AudioByPosition : MonoBehaviour
         float distance = playerToBall.magnitude;
 
         // 根据距离映射音频pitch
-        audioSource.pitch = maxPitch * (1 - Mathf.InverseLerp(minDistance, maxDistance, distance)) + 1;
+        float pitchPercent = 1 - Mathf.InverseLerp(minDistance, maxDistance, distance);
+        float t = 1 / pitchPercentScale;
+        
+        float newPitch = maxPitch * pitchPercent + 1;
+        newPitch = Mathf.Round(newPitch * t) / t;
+        audioSource.pitch = newPitch;
     }
 }
