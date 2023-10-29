@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 
 public class BallBehaviour : MonoBehaviour
 {
+    private AudioControl mAudioControl;
+    
     public float speed = 5.0f; // 你可以调整速度
 
     private Rigidbody rb;
@@ -15,6 +17,7 @@ public class BallBehaviour : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        mAudioControl = GetComponent<AudioControl>();
 
         // 随机选择一个水平方向
         float randomAngle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
@@ -45,8 +48,9 @@ public class BallBehaviour : MonoBehaviour
             // 当球与其他物体碰撞时
             Vector3 hitNormal = Vector3.Reflect(direction, hit.normal);
             direction = hitNormal.normalized;
+            
+            mAudioControl.PlayBounce();
         }
-
 
     }
 }
