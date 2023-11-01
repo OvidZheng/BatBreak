@@ -27,8 +27,12 @@ public class MovePlayer : MonoBehaviour
     {
         if (isStop && ListenUserMoveInpute())
         {
-            //whatever
             isStop = false;
+        }
+        
+        if (isStop && LinstenUserRotateInput())
+        {
+            //whatever
         }
         
         if (!isStop &&  CheckArriveDestination())
@@ -41,7 +45,26 @@ public class MovePlayer : MonoBehaviour
         {
             float speed = moveUnit / timePerMoveUnit;
             Vector3 newPosition = transform.position + moveDirection * speed * Time.deltaTime;
-            transform.SetPositionAndRotation(newPosition, Quaternion.LookRotation(moveDirection, Vector3.up));
+            transform.position = newPosition;
+        }
+    }
+
+    private bool LinstenUserRotateInput()
+    {
+        // 旋转控制
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            transform.Rotate(0, -90f, 0, Space.Self);
+            return true;
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            transform.Rotate(0, 90f, 0, Space.Self);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -52,19 +75,19 @@ public class MovePlayer : MonoBehaviour
         // 检测按键和障碍物，确定移动方向
         if (Input.GetKeyDown(KeyCode.W))
         {
-            moveDirection = Vector3.forward;
+            moveDirection = transform.forward;
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            moveDirection = Vector3.back;
+            moveDirection = -transform.forward;
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-            moveDirection = Vector3.left;
+            moveDirection = -transform.right;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            moveDirection = Vector3.right;
+            moveDirection = transform.right;
         }
         
         if (moveDirection != Vector3.zero)
@@ -76,7 +99,6 @@ public class MovePlayer : MonoBehaviour
             }
             else
             {
-                transform.rotation = Quaternion.LookRotation(moveDirection, Vector3.up);
                 return false;
             }
         }
