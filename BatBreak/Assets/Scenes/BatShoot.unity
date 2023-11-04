@@ -889,6 +889,7 @@ GameObject:
   - component: {fileID: 2017167379}
   - component: {fileID: 2017167383}
   - component: {fileID: 2017167384}
+  - component: {fileID: 2017167385}
   m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
@@ -905,7 +906,7 @@ Transform:
   m_GameObject: {fileID: 2017167377}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: -9.5}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: -9.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1026,6 +1027,20 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2048
+--- !u!114 &2017167385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017167377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fd5c8d46b4ae2e4193fd24384cd523f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 483271999745429859, guid: 88fe15341f040f04c95de36d72901cba,
+    type: 3}
 --- !u!1 &2115662770
 GameObject:
   m_ObjectHideFlags: 0
