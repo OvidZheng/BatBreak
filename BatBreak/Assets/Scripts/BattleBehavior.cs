@@ -1,25 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class BattleBehavior : MonoBehaviour
+public class BattleBehavior : NetworkBehaviour
 {
-    // ... 之前的变量声明
 
     public GameObject bulletPrefab; // 子弹的预制体
-
-    // ...Start () 方法
-
+    
     private void Update()
     {
-        // ... 之前的移动和旋转代码
+        if (!IsOwner)
+        {
+            return;
+        }
 
         // 发射子弹
         if (Input.GetKeyDown(KeyCode.J))
         {
-            GameObject bullet = Instantiate(bulletPrefab, transform.position + transform.forward, transform.rotation);
+            FireBulletServerRpc();
+        }
+    }
+    
+    [ServerRpc]
+    void FireBulletServerRpc()
+    {
+        if (!IsServer) return;
+
+        GameObject bullet = Instantiate(bulletPrefab, transform.position + transform.forward, transform.rotation);
+        NetworkObject bulletNetworkObject = bullet.GetComponent<NetworkObject>();
+
+        if (bulletNetworkObject != null)
+        {
+            bulletNetworkObject.Spawn();
+        }
+        else
+        {
+            Debug.LogError("Spawned bullet does not have a NetworkObject component.");
         }
     }
 
-    // ... IsObstacleInDirection() 方法
 }
