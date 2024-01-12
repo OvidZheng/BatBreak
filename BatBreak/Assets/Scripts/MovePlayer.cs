@@ -1,46 +1,44 @@
 using Unity.Netcode;
 using UnityEngine;
 
-
 public class MovePlayer : NetworkBehaviour
 {
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 200.0f;
+
+    private Vector3 movementInput;
+    private float rotateInput;
+
     void Update()
     {
-        
         if (IsOwner)
         {
-            HandleInput();
+            CollectInput();
+            Move();
+            Rotate();
         }
     }
-    
-    void HandleInput()
+
+    void CollectInput()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
+        movementInput = moveHorizontal * transform.right + moveVertical * transform.forward;
 
-        Vector3 movement = moveHorizontal * transform.right + moveVertical * transform.forward;
-        MoveServerRpc(movement);
-
-        float rotate = 0.0f;
+        rotateInput = 0.0f;
         if (Input.GetKey(KeyCode.Q))
-            rotate = -1.0f;
+            rotateInput = -1.0f;
         else if (Input.GetKey(KeyCode.E))
-            rotate = 1.0f;
-
-        RotateServerRpc(rotate);
-    }
-    
-    [ServerRpc]
-    void MoveServerRpc(Vector3 movement)
-    {
-        transform.Translate(movement * moveSpeed * Time.deltaTime, Space.World);
+            rotateInput = 1.0f;
     }
 
-    [ServerRpc]
-    void RotateServerRpc(float rotate)
+    void Move()
     {
-        transform.Rotate(Vector3.up, rotate * rotateSpeed * Time.deltaTime);
+        transform.Translate(movementInput * moveSpeed * Time.deltaTime, Space.World);
+    }
+
+    void Rotate()
+    {
+        transform.Rotate(Vector3.up, rotateInput * rotateSpeed * Time.deltaTime);
     }
 }
