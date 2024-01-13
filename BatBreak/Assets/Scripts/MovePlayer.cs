@@ -5,17 +5,34 @@ public class MovePlayer : NetworkBehaviour
 {
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 200.0f;
+    private bool roundInputConnected;
 
+    private Rigidbody rb;
     private Vector3 movementInput;
     private float rotateInput;
 
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        roundInputConnected = false;
+    }
+
     void Update()
+    {
+        if (IsOwner && !roundInputConnected)
+        {
+            CollectInput();
+            roundInputConnected = true;
+        }
+    }
+
+    void FixedUpdate()
     {
         if (IsOwner)
         {
-            CollectInput();
             Move();
             Rotate();
+            roundInputConnected = false;
         }
     }
 
@@ -23,9 +40,9 @@ public class MovePlayer : NetworkBehaviour
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-        movementInput = moveHorizontal * transform.right + moveVertical * transform.forward;
+        movementInput = moveHorizontal * Vector3.right + moveVertical * Vector3.forward;
 
-        rotateInput = 0.0f;
+        
         if (Input.GetKey(KeyCode.Q))
             rotateInput = -1.0f;
         else if (Input.GetKey(KeyCode.E))
@@ -34,11 +51,18 @@ public class MovePlayer : NetworkBehaviour
 
     void Move()
     {
-        transform.Translate(movementInput * moveSpeed * Time.deltaTime, Space.World);
+        // 使用 Rigidbody 进行移动
+        Vector3 movement = movementInput * moveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(rb.position + movement);
+        movementInput = Vector3.zero;
     }
 
     void Rotate()
     {
-        transform.Rotate(Vector3.up, rotateInput * rotateSpeed * Time.deltaTime);
+        // 使用 Rigidbody 进行旋转
+        float rotation = rotateInput * rotateSpeed * Time.fixedDeltaTime;
+        Quaternion deltaRotation = Quaternion.Euler(Vector3.up * rotation);
+        rb.MoveRotation(rb.rotation * deltaRotation);
+        rotateInput = 0.0f;
     }
 }
