@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64eee7098f5b97542895988cc010b747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpeed: 5
+  bulletSpeed: 4
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2048

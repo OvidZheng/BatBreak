@@ -6,15 +6,22 @@ using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
+
 public class NetworkManagerUI : MonoBehaviour
 {
+    public delegate void ColorChangeAction();
+    
     [SerializeField] private Button serverButton;
     [SerializeField] private Button hostButton;
     [SerializeField] private Button clientButton;
     [SerializeField] private Button localserverButton;
     [SerializeField] private Button localclientButton;
+    [SerializeField] private Button changeColorButton;
     public string localServerIPAddress ="127.0.0.1";
-
+    
+    public static event ColorChangeAction OnColorChangeRequested;
     private void Awake()
     {
         serverButton.onClick.AddListener((() => NetworkManager.Singleton.StartServer()));
@@ -30,5 +37,10 @@ public class NetworkManagerUI : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(localServerIPAddress, 7777);
             NetworkManager.Singleton.StartClient();
         }));
+        changeColorButton.onClick.AddListener(((() =>
+        {
+            OnColorChangeRequested.Invoke();
+        })));
     }
 }
+

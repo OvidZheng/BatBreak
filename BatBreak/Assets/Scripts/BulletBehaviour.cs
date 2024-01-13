@@ -17,7 +17,7 @@ public class BulletBehaviour : NetworkBehaviour
 
     private void MoveBullet()
     {
-        transform.position = transform.position + bulletSpeed * transform.forward * Time.deltaTime;
+        transform.position += bulletSpeed * transform.forward * Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -38,13 +38,24 @@ public class BulletBehaviour : NetworkBehaviour
             }
         }
 
-        // 检测障碍物LayerMask
+        // 检测并处理撞击障碍物
         if ((obstacleMask.value & (1 << other.gameObject.layer)) > 0)
         {
-            DestroySelf();
+            ReflectBullet(other);
         }
-        
+    }
 
+    private void ReflectBullet(Collider collider)
+    {
+        // 计算反射方向
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, bulletSpeed * Time.deltaTime * 10, obstacleMask))
+        {
+            Vector3 reflectDirection = Vector3.Reflect(ray.direction, hit.normal);
+            transform.forward = reflectDirection;
+        }
     }
 
     public void DestroySelf()
