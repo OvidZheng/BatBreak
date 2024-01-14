@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1102410433
+  GlobalObjectIdHash: 3758087283
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 483271999745429859, guid: 88fe15341f040f04c95de36d72901cba,
     type: 3}
-  bulletPosOffset: {x: 0, y: 0, z: 0.8}
+  bulletPosOffset: {x: 0, y: 0, z: 0.6}
   maxBullets: 30
   bulletRecoveryRate: 2
   fireLock:

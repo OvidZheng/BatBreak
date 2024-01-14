@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4259338515
+  GlobalObjectIdHash: 2976279154
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -141,14 +141,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64eee7098f5b97542895988cc010b747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpeed: 4
+  bulletSpeed: 8
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2048
   playerMask:
     serializedVersion: 2
     m_Bits: 8192
-  maxReflections: 6
+  maxReflections: 8
 --- !u!54 &2397301765037363759
 Rigidbody:
   m_ObjectHideFlags: 0

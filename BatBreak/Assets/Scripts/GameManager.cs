@@ -12,13 +12,16 @@ public class GameManager : NetworkBehaviour
     public delegate void GameModeAction();
 
     public static event GameModeAction OnGameReset;
-
+    public GameObject destructibleObstaclePrefab; // 可摧毁障碍物的预制体
+    public List<Transform> destructableObjectsTransforms;
     public Transform[] spawnPoints;
     public GameObject playerPrefab;
     public static GameManager Instance { get; private set; }
+    [Range(0f, 1f)] public float DestructableObjProbability = 0.5f;
     private List<Player> players = new List<Player>(); // 假设有一个Player类来代表玩家
-    public GameObject destructibleObstaclePrefab; // 可摧毁障碍物的预制体
     private List<DestructibleObstacleInfo> destructibleObstacles = new List<DestructibleObstacleInfo>();
+   
+    
 
     private void Awake()
     {
@@ -160,13 +163,20 @@ public class GameManager : NetworkBehaviour
     // 初始化障碍物列表
     private void InitializeDestructibleObstacles()
     {
-        foreach (DestructibleObstacle obstacle in FindObjectsOfType<DestructibleObstacle>())
+        foreach (Transform destructableOBJTrans in destructableObjectsTransforms)
         {
+            if (Random.value > DestructableObjProbability)
+            {
+                continue;
+            }
+            GameObject newObstacle =
+                Instantiate(destructibleObstaclePrefab, destructableOBJTrans.position, destructableOBJTrans.rotation);
+            newObstacle.GetComponent<NetworkObject>().Spawn(); // 确保障碍物在网络上生成
             DestructibleObstacleInfo info = new DestructibleObstacleInfo
             {
-                position = obstacle.transform.position,
-                rotation = obstacle.transform.rotation,
-                gameObj = obstacle.gameObject
+                position = destructableOBJTrans.transform.position,
+                rotation = destructableOBJTrans.transform.rotation,
+                gameObj = destructableOBJTrans.gameObject
             };
             destructibleObstacles.Add(info);
         }
@@ -203,13 +213,7 @@ public class GameManager : NetworkBehaviour
             }
         }
 
-        // 根据记录的信息重新生成障碍物
-        foreach (var obstacleInfo in destructibleObstacles)
-        {
-            GameObject newObstacle =
-                Instantiate(destructibleObstaclePrefab, obstacleInfo.position, obstacleInfo.rotation);
-            newObstacle.GetComponent<NetworkObject>().Spawn(); // 确保障碍物在网络上生成
-        }
+        InitializeDestructibleObstacles();
     }
 }
 

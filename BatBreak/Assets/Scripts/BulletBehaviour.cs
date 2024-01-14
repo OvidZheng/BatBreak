@@ -62,9 +62,8 @@ public class BulletBehaviour : NetworkBehaviour
             if (obstacle != null)
             {
                 obstacle.TakeDamage(10); // 假设每次子弹造成10点伤害
-                DestroySelf();
-                return;
             }
+            
             reflectionsCount++;
             if (reflectionsCount >= maxReflections)
             {
