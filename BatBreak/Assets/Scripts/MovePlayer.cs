@@ -5,6 +5,7 @@ public class MovePlayer : NetworkBehaviour
 {
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 200.0f;
+    public NetworkVariable<bool> moveLock = new NetworkVariable<bool>(false);
     private bool roundInputConnected;
 
     private Rigidbody rb;
@@ -19,6 +20,10 @@ public class MovePlayer : NetworkBehaviour
 
     void Update()
     {
+        if (moveLock.Value)
+        {
+            return;
+        }
         if (IsOwner && !roundInputConnected)
         {
             CollectInput();

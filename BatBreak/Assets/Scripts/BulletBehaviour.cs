@@ -17,6 +17,17 @@ public class BulletBehaviour : NetworkBehaviour
             MoveBullet();
         }
     }
+    
+    private void OnEnable()
+    {
+        GameManager.OnGameReset += DestroySelf;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnGameReset -= DestroySelf;
+    }
+
 
     private void MoveBullet()
     {

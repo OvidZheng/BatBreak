@@ -54,27 +54,27 @@ public class PlayerBody : NetworkBehaviour
 
             if (Health.Value <= 0)
             {
+                Health.Value = 0;
                 // 玩家死亡的逻辑（例如重新生成等）
-                GetComponent<NetworkObject>().Despawn();
-                Destroy(gameObject);
+                // GetComponent<NetworkObject>().Despawn();
+                // Destroy(gameObject);
             }
         }
 
     }
     
-    private void ChangeColor()
+    
+    [ServerRpc]
+    public void RequestChangeMarkColorServerRpc(ServerRpcParams rpcParams = default)
     {
-        if (IsClient)
-        {
-            // 请求服务器更改颜色
-            RequestChangeMarkColorServerRpc();
-        }
+        markColorIndex.Value = (markColorIndex.Value + 1) % playerColors.Length;
+        Debug.Log("change color index: " + markColorIndex.Value);
     }
     
     [ServerRpc]
-    private void RequestChangeMarkColorServerRpc(ServerRpcParams rpcParams = default)
+    public void RequestChangeMarkColorSpecificServerRpc(int colorIndex, ServerRpcParams rpcParams = default)
     {
-        markColorIndex.Value = (markColorIndex.Value + 1) % playerColors.Length;
+        markColorIndex.Value = colorIndex;
     }
 
 

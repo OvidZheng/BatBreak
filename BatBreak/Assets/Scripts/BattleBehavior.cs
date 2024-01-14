@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 
 public class BattleBehavior : NetworkBehaviour
@@ -10,10 +11,13 @@ public class BattleBehavior : NetworkBehaviour
     public Vector3 bulletPosOffset;
     public int maxBullets = 10; // 最大子弹数
     public float bulletRecoveryRate = 1; // 每秒恢复的子弹数
+    public NetworkVariable<bool> fireLock = new NetworkVariable<bool>(false);
     private float nextBulletRecoveryTime = 0; // 下一次恢复子弹的时间
 
     public NetworkVariable<int> currentBullets = new NetworkVariable<int>(); // 当前子弹数
+    
 
+    
     private void Start()
     {
         if (IsServer)
@@ -24,6 +28,10 @@ public class BattleBehavior : NetworkBehaviour
 
     private void Update()
     {
+        if (fireLock.Value)
+        {
+            return;
+        }
         if (!IsOwner)
         {
             return;
@@ -37,6 +45,11 @@ public class BattleBehavior : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if (fireLock.Value)
+        {
+            return;
+        }
+        
         if (IsServer)
         {
             // 子弹恢复机制
