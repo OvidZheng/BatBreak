@@ -132,7 +132,7 @@ public class BattleBehavior : NetworkBehaviour
 
         while (Time.time < startTime + effectDuration)
         {
-            float scale = Mathf.Lerp(0, clearRadius, (Time.time - startTime) / effectDuration);
+            float scale = Mathf.Lerp(0, clearRadius * 1.2f, (Time.time - startTime) / effectDuration);
             effect.transform.localScale = new Vector3(scale, scale, scale);
             yield return null;
         }

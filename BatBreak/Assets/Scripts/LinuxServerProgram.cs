@@ -14,6 +14,7 @@ public class LinuxServerProgram : NetworkBehaviour
             {
                 Debug.Log("Running as server");
                 NetworkManager.Singleton.StartServer();
+                GameManager.Instance.ServerInitGame();
                 NetworkManager.Singleton.OnClientConnectedCallback += ClientConnectMessage;
             }
         }

@@ -107,8 +107,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.6470103, y: 1, z: 0.8180605}
+  m_Center: {x: -0.0083542615, y: 0, z: -0.0026547783}
 --- !u!114 &1102615426296944860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,6 +148,7 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 8192
+  maxReflections: 6
 --- !u!54 &2397301765037363759
 Rigidbody:
   m_ObjectHideFlags: 0

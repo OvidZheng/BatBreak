@@ -262,10 +262,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.40942588
+  m_Radius: 0.25304878
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: -0.0047912598, y: 0, z: 0}
+  m_Center: {x: 0.008240144, y: 0, z: 0}
 --- !u!1 &3106330885987232811
 GameObject:
   m_ObjectHideFlags: 0
