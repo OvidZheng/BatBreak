@@ -6,6 +6,9 @@ public class BulletBehaviour : NetworkBehaviour
     public float bulletSpeed;
     public LayerMask obstacleMask; // 障碍物的LayerMask
     public LayerMask playerMask; // 玩家的LayerMask
+    public int maxReflections = 3; // 子弹最多弹射的次数
+
+    private int reflectionsCount = 0; // 当前子弹弹射的次数
 
     void Update()
     {
@@ -35,13 +38,22 @@ public class BulletBehaviour : NetworkBehaviour
             {
                 player.TakeDamage(10); // 假设每次命中扣除10点生命值
                 DestroySelf();
+                return; // 提前返回，防止执行额外的逻辑
             }
         }
 
         // 检测并处理撞击障碍物
         if ((obstacleMask.value & (1 << other.gameObject.layer)) > 0)
         {
-            ReflectBullet(other);
+            reflectionsCount++;
+            if (reflectionsCount >= maxReflections)
+            {
+                DestroySelf();
+            }
+            else
+            {
+                ReflectBullet(other);
+            }
         }
     }
 

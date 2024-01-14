@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 
 
-public class NetworkManagerUI : MonoBehaviour
+public class  NetworkManagerUI : MonoBehaviour
 {
     public delegate void ColorChangeAction();
     

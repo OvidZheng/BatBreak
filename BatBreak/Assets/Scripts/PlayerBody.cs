@@ -8,14 +8,28 @@ using UnityEngine.Serialization;
 public class PlayerBody : NetworkBehaviour
 {
     public NetworkVariable<int> Health = new NetworkVariable<int>(100);
-    [FormerlySerializedAs("ColorIndex")] public NetworkVariable<int> markColorIndex = new NetworkVariable<int>(0); // 用于同步颜色的网络变量
-    public Renderer playerMarkRenderer;
+    public NetworkVariable<int> markColorIndex = new NetworkVariable<int>(0); // 用于同步颜色的网络变量
+    public List<Renderer> playerMarkRenderers; // 修改为Renderer的列表
+
     
     private Renderer playerRenderer; // Renderer to change the color of the player
 
 
     // 定义一个颜色数组
-    private Color[] playerColors = new Color[] { Color.red, Color.green, Color.blue, Color.yellow };
+    // 定义一个颜色数组
+    private Color[] playerColors = new Color[] {
+        new Color(0, 0, 1, 4), // 亮蓝色
+        new Color(1, 1, 0, 4), // 亮黄色
+        new Color(1.5f, 0, 1.5f, 4), // 亮紫色
+        new Color(0, 1.5f, 1.5f, 4), // 亮青色
+        new Color(1.5f, 0.75f, 0, 4), // 亮橙色
+        new Color(1.5f, 1.125f, 1.2f, 4), // 亮粉色
+        new Color(0.75f, 1.125f, 1.5f, 4), // 亮天蓝色
+        new Color(0.9f, 1.5f, 0.9f, 4), // 亮薄荷绿
+        new Color(1.5f, 1.2f, 0.9f, 4) // 亮桃色
+    };
+
+
 
 
     private void Start()
@@ -71,7 +85,11 @@ public class PlayerBody : NetworkBehaviour
         Color playerHealthColor = Color.Lerp(Color.red, Color.green, healthPercentage);
         playerRenderer.material.SetColor("_PlayerBaseColor", playerHealthColor);
         Color playerMarkColor = playerColors[markColorIndex.Value];
-        playerMarkRenderer.material.SetColor("_PlayerBaseColor", playerMarkColor);
+        // 更新每个标记的颜色
+        foreach (Renderer markRenderer in playerMarkRenderers)
+        {
+            markRenderer.material.SetColor("_PlayerBaseColor", playerMarkColor);
+        }
     }
     
     private void OnEnable()
