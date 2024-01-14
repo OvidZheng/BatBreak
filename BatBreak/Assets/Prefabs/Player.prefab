@@ -154,7 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4.5
   rotateSpeed: 300
-  moveLock: 0
+  moveLock:
+    m_InternalValue: 0
 --- !u!114 &-4891468249678743811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,9 +203,15 @@ MonoBehaviour:
   bulletPosOffset: {x: 0, y: 0, z: 0.8}
   maxBullets: 20
   bulletRecoveryRate: 2
-  fireLock: 0
+  fireLock:
+    m_InternalValue: 0
   currentBullets:
     m_InternalValue: 0
+  clearRadius: 3
+  ClearbulletsToConsume: 1
+  clearEffectPrefab: {fileID: 151808029338339143, guid: 58e510dd29b2de24bb14ffeaa574b7b8,
+    type: 3}
+  effectDuration: 0.2
 --- !u!114 &-6711687654130966179
 MonoBehaviour:
   m_ObjectHideFlags: 0

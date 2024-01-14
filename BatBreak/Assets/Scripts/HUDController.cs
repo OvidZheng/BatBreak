@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
@@ -6,7 +7,9 @@ using Unity.VisualScripting;
 public class HUDController : NetworkBehaviour
 {
     private BattleBehavior playerBattleBehavior;
+    private PlayerBody _playerBody;
     public Image bulletsImage;
+    public TextMeshProUGUI healthText;
     private void Start()
     {
         if ((IsServer && !IsHost))
@@ -20,6 +23,7 @@ public class HUDController : NetworkBehaviour
         if (NetworkStatic.Instance.GetlocalPlayerTransform() != null)
         {
             playerBattleBehavior = NetworkStatic.Instance.GetlocalPlayerTransform().GetComponent<BattleBehavior>();
+            _playerBody = NetworkStatic.Instance.GetlocalPlayerTransform().GetComponent<PlayerBody>();
         }
     }
     
@@ -33,6 +37,7 @@ public class HUDController : NetworkBehaviour
         if (playerBattleBehavior != null)
         {
             UpdateBulletsUI();
+            UpdateHealthUI();
         }
         else
         {
@@ -48,5 +53,11 @@ public class HUDController : NetworkBehaviour
             float bulletsPercentage = (float)currentBullets / playerBattleBehavior.maxBullets;
             bulletsImage.fillAmount = bulletsPercentage;
         }
+    }
+    
+    private void UpdateHealthUI()
+    {
+        // 显示健康值
+        healthText.text = "Health: " + _playerBody.Health.Value.ToString();
     }
 }

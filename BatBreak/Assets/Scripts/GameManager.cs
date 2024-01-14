@@ -125,6 +125,12 @@ public class GameManager : NetworkBehaviour
     // 检查所有玩家是否都已死亡
     private void CheckAndResetGame()
     {
+        if (players.Count <= 0)
+        {
+            return;
+
+        }
+
         foreach (Player sp in players)
         {
             if (sp.IsAlive && sp.playerBody.Health.Value <= 0)
@@ -136,7 +142,7 @@ public class GameManager : NetworkBehaviour
         int alivePlayersCount = players.Count(player => player.IsAlive);
 
         // 如果场上只剩一人或者一人以下，则重置游戏
-        if (alivePlayersCount <= 1)
+        if ((alivePlayersCount <= 1 && players.Count > 1) || alivePlayersCount == 0)
         {
             ResetGame();
         }

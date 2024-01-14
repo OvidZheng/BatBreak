@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BattleBehavior : NetworkBehaviour
 {
@@ -16,6 +17,11 @@ public class BattleBehavior : NetworkBehaviour
 
     public NetworkVariable<int> currentBullets = new NetworkVariable<int>(); // 当前子弹数
     
+    public float clearRadius = 5.0f; // 清除子弹的范围半径
+    public int ClearbulletsToConsume = 1; // 消耗的子弹数
+    public GameObject clearEffectPrefab; // 清除效果的预制体
+    public float effectDuration = 0.5f; // 效果持续时间
+
 
     
     private void Start()
@@ -40,6 +46,12 @@ public class BattleBehavior : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.J) && currentBullets.Value > 0)
         {
             FireBulletServerRpc();
+        }
+        
+        // 清空子弹
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            ClearBulletsInRangeServerRpc();
         }
     }
 
@@ -83,9 +95,48 @@ public class BattleBehavior : NetworkBehaviour
             }
         }
     }
+    
+    [ServerRpc]
+    void ClearBulletsInRangeServerRpc()
+    {
+        if (!IsServer || currentBullets.Value < ClearbulletsToConsume) return;
 
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, clearRadius);
+        foreach (var hitCollider in hitColliders)
+        {
+            var bullet = hitCollider.GetComponent<BulletBehaviour>();
+            if (bullet != null)
+            {
+                bullet.DestroySelf();
+            }
+        }
+        currentBullets.Value -= ClearbulletsToConsume; // 消耗子弹
+        CreateClearEffectClientRpc();
+    }
+    
+    
+    [ClientRpc]
+    void CreateClearEffectClientRpc()
+    {
+        StartCoroutine(CreateClearEffectCoroutine());
+    }
     public int GetCurrentBullets()
     {
         return currentBullets.Value;
+    }
+    
+    private IEnumerator CreateClearEffectCoroutine()
+    {
+        GameObject effect = Instantiate(clearEffectPrefab, transform.position, Quaternion.identity);
+        float startTime = Time.time;
+
+        while (Time.time < startTime + effectDuration)
+        {
+            float scale = Mathf.Lerp(0, clearRadius, (Time.time - startTime) / effectDuration);
+            effect.transform.localScale = new Vector3(scale, scale, scale);
+            yield return null;
+        }
+
+        Destroy(effect);
     }
 }
