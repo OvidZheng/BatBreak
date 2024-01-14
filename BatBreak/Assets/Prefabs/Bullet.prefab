@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1102615426296944860}
   - component: {fileID: 7098837806561268685}
   - component: {fileID: 2397301765037363759}
-  - component: {fileID: 7071916342058574390}
+  - component: {fileID: 390463964560649279}
   m_Layer: 12
   m_Name: Bullet
   m_TagString: Untagged
@@ -107,8 +107,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6470103, y: 1, z: 0.8180605}
-  m_Center: {x: -0.0083542615, y: 0, z: -0.0026547783}
+  m_Size: {x: 0.8615785, y: 1, z: 0.94123846}
+  m_Center: {x: 0.0035662204, y: 0, z: 0.0033053756}
 --- !u!114 &1102615426296944860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2976279154
+  GlobalObjectIdHash: 4259338515
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -176,7 +176,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7071916342058574390
+--- !u!114 &390463964560649279
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 483271999745429859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SyncPositionX: 1
@@ -204,5 +204,5 @@ MonoBehaviour:
   UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0

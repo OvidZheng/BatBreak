@@ -11,11 +11,9 @@ public class BulletBehaviour : NetworkBehaviour
     private int reflectionsCount = 0; // 当前子弹弹射的次数
 
     void Update()
-    {
-        if (IsServer)
-        {
-            MoveBullet();
-        }
+    { 
+        MoveBullet();
+
     }
     
     private void OnEnable()
