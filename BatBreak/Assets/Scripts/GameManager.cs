@@ -9,15 +9,17 @@ using Random = UnityEngine.Random;
 
 public class GameManager : NetworkBehaviour
 {
-    
     public delegate void GameModeAction();
+
     public static event GameModeAction OnGameReset;
-    
-    public Transform[] spawnPoints; 
+
+    public Transform[] spawnPoints;
     public GameObject playerPrefab;
     public static GameManager Instance { get; private set; }
     private List<Player> players = new List<Player>(); // 假设有一个Player类来代表玩家
-    
+    public GameObject destructibleObstaclePrefab; // 可摧毁障碍物的预制体
+    private List<DestructibleObstacleInfo> destructibleObstacles = new List<DestructibleObstacleInfo>();
+
     private void Awake()
     {
         if (Instance == null)
@@ -30,13 +32,21 @@ public class GameManager : NetworkBehaviour
             Destroy(gameObject); // 如果已经有一个实例存在，则销毁新创建的对象
         }
     }
-    
+
     private void Start()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisConnected;
     }
-    
+
+    public void ServerInitGame()
+    {
+        if (IsServer)
+        {
+            InitializeDestructibleObstacles();
+        }
+    }
+
 
     private void OnDestroy()
     {
@@ -71,7 +81,6 @@ public class GameManager : NetworkBehaviour
             DeSpawnPlayer(targetPlayer);
             players.Remove(targetPlayer);
         }
-
     }
 
     private void SpawnPlayerOnEnter(ulong clientId)
@@ -80,7 +89,7 @@ public class GameManager : NetworkBehaviour
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         // 创建玩家对象
         GameObject newPlayerGB = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        
+
         Player np = new Player();
         np.playerGB = newPlayerGB;
         np.clientId = clientId;
@@ -122,13 +131,13 @@ public class GameManager : NetworkBehaviour
             sp.markColorIndex = sp.playerBody.markColorIndex.Value;
         }
     }
+
     // 检查所有玩家是否都已死亡
     private void CheckAndResetGame()
     {
         if (players.Count <= 0)
         {
             return;
-
         }
 
         foreach (Player sp in players)
@@ -148,6 +157,21 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    // 初始化障碍物列表
+    private void InitializeDestructibleObstacles()
+    {
+        foreach (DestructibleObstacle obstacle in FindObjectsOfType<DestructibleObstacle>())
+        {
+            DestructibleObstacleInfo info = new DestructibleObstacleInfo
+            {
+                position = obstacle.transform.position,
+                rotation = obstacle.transform.rotation,
+                gameObj = obstacle.gameObject
+            };
+            destructibleObstacles.Add(info);
+        }
+    }
+
     // 重置游戏
     private void ResetGame()
     {
@@ -159,9 +183,33 @@ public class GameManager : NetworkBehaviour
             player.playerGB = newPlayerObj;
             player.Born(); // 假设玩家对象有一个Respawn方法
         }
+
+        ResetDestructibleObstacles();
         OnGameReset?.Invoke();
 
         // 任何其他需要的重置逻辑
+    }
+
+    private void ResetDestructibleObstacles()
+    {
+        // 销毁现有的障碍物
+        foreach (var obstacle in FindObjectsOfType<DestructibleObstacle>())
+        {
+            NetworkObject networkObject = obstacle.transform.GetComponent<NetworkObject>();
+            if (networkObject != null)
+            {
+                networkObject.Despawn(); // 在服务器上销毁障碍物，并在所有客户端上同步
+                Destroy(obstacle.gameObject);
+            }
+        }
+
+        // 根据记录的信息重新生成障碍物
+        foreach (var obstacleInfo in destructibleObstacles)
+        {
+            GameObject newObstacle =
+                Instantiate(destructibleObstaclePrefab, obstacleInfo.position, obstacleInfo.rotation);
+            newObstacle.GetComponent<NetworkObject>().Spawn(); // 确保障碍物在网络上生成
+        }
     }
 }
 
@@ -174,7 +222,7 @@ public class Player
     public GameObject playerGB;
     public ulong clientId;
     public int markColorIndex = 0;
-    
+
     public void Born()
     {
         // 在网络上生成玩家对象
@@ -196,5 +244,12 @@ public class Player
         movePlayer.moveLock.Value = true;
         BattleBehavior.fireLock.Value = true;
     }
-    
+}
+
+[System.Serializable]
+public class DestructibleObstacleInfo
+{
+    public Vector3 position;
+    public Quaternion rotation;
+    public GameObject gameObj;
 }

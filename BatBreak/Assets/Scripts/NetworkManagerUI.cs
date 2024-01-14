@@ -24,17 +24,31 @@ public class  NetworkManagerUI : MonoBehaviour
     public static event ColorChangeAction OnColorChangeRequested;
     private void Awake()
     {
-        serverButton.onClick.AddListener((() => NetworkManager.Singleton.StartServer()));
-        hostButton.onClick.AddListener((() => NetworkManager.Singleton.StartHost()));
-        clientButton.onClick.AddListener((() => NetworkManager.Singleton.StartClient()));
+        serverButton.onClick.AddListener((() =>
+        {
+            NetworkManager.Singleton.StartServer();
+            GameManager.Instance.ServerInitGame();
+        }));
+        hostButton.onClick.AddListener((() =>
+        {
+            NetworkManager.Singleton.StartHost();
+            GameManager.Instance.ServerInitGame();
+        }));
+        clientButton.onClick.AddListener((() =>
+        {
+            // GameManager.Instance.ClientInitGame();
+            NetworkManager.Singleton.StartClient();
+        }));
         localserverButton.onClick.AddListener((() =>
         {
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(localServerIPAddress, 7777);
             NetworkManager.Singleton.StartServer();
+            GameManager.Instance.ServerInitGame();
         }));
         localclientButton.onClick.AddListener((() =>
         {
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(localServerIPAddress, 7777);
+            // GameManager.Instance.ClientInitGame();
             NetworkManager.Singleton.StartClient();
         }));
         changeColorButton.onClick.AddListener(((() =>

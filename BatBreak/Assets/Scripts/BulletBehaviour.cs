@@ -56,6 +56,15 @@ public class BulletBehaviour : NetworkBehaviour
         // 检测并处理撞击障碍物
         if ((obstacleMask.value & (1 << other.gameObject.layer)) > 0)
         {
+            
+            // 新增代码：处理障碍物的损坏
+            DestructibleObstacle obstacle = other.GetComponent<DestructibleObstacle>();
+            if (obstacle != null)
+            {
+                obstacle.TakeDamage(10); // 假设每次子弹造成10点伤害
+                DestroySelf();
+                return;
+            }
             reflectionsCount++;
             if (reflectionsCount >= maxReflections)
             {

@@ -201,14 +201,14 @@ MonoBehaviour:
   bulletPrefab: {fileID: 483271999745429859, guid: 88fe15341f040f04c95de36d72901cba,
     type: 3}
   bulletPosOffset: {x: 0, y: 0, z: 0.8}
-  maxBullets: 20
+  maxBullets: 30
   bulletRecoveryRate: 2
   fireLock:
     m_InternalValue: 0
   currentBullets:
     m_InternalValue: 0
   clearRadius: 3
-  ClearbulletsToConsume: 1
+  ClearbulletsToConsume: 8
   clearEffectPrefab: {fileID: 151808029338339143, guid: 58e510dd29b2de24bb14ffeaa574b7b8,
     type: 3}
   effectDuration: 0.2
