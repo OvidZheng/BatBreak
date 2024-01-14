@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,16 +13,13 @@ public class DestructibleObstacle : NetworkBehaviour
     {
         objRenderer = GetComponent<Renderer>();
         maxHealth = Health.Value; // 假设初始生命值是最大生命值
-        UpdateMaterialColor(); // 初始颜色更新
     }
-
     public void TakeDamage(int damage)
     {
         if (!IsServer) return;
 
         Health.Value -= damage;
-        UpdateMaterialColor(); // 更新颜色
-
+        
         if (Health.Value <= 0)
         {
             PlayDestructionEffectClientRpc();
@@ -34,6 +32,11 @@ public class DestructibleObstacle : NetworkBehaviour
         float healthPercentage = (float)Health.Value / maxHealth;
         Color newColor = Color.Lerp(Color.black, Color.white, healthPercentage); // 白色到黑色
         objRenderer.material.SetColor("_Color", newColor);
+    }
+
+    private void FixedUpdate()
+    {
+        UpdateMaterialColor(); // 更新颜色
     }
 
     [ClientRpc]
