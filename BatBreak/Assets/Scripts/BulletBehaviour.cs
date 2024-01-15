@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,7 +9,8 @@ public class BulletBehaviour : NetworkBehaviour
     public LayerMask playerMask; // 玩家的LayerMask
     public int maxReflections = 3; // 子弹最多弹射的次数
 
-    private int reflectionsCount = 0; // 当前子弹弹射的次数
+    private int reflectionsCount = 0;// 当前子弹弹射的次数
+    private bool isTriggeredEnd = false;
 
     void Update()
     { 
@@ -29,16 +31,26 @@ public class BulletBehaviour : NetworkBehaviour
 
     private void MoveBullet()
     {
+
         transform.position += bulletSpeed * transform.forward * Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsServer)
+        if (!IsServer || isTriggeredEnd)
         {
             return;
         }
+        
+        ProcessHit(other);
+    }
 
+    private void ProcessHit(Collider other)
+    {
+        if (isTriggeredEnd)
+        {
+            return;
+        }
         // 检测是否命中玩家
         if ((playerMask.value & (1 << other.gameObject.layer)) > 0)
         {
@@ -47,21 +59,20 @@ public class BulletBehaviour : NetworkBehaviour
             {
                 player.TakeDamage(10); // 假设每次命中扣除10点生命值
                 DestroySelf();
-                return; // 提前返回，防止执行额外的逻辑
+                return;
             }
         }
 
         // 检测并处理撞击障碍物
         if ((obstacleMask.value & (1 << other.gameObject.layer)) > 0)
         {
-            
             // 新增代码：处理障碍物的损坏
             DestructibleObstacle obstacle = other.GetComponent<DestructibleObstacle>();
             if (obstacle != null)
             {
                 obstacle.TakeDamage(10); // 假设每次子弹造成10点伤害
             }
-            
+
             reflectionsCount++;
             if (reflectionsCount >= maxReflections)
             {
@@ -72,6 +83,17 @@ public class BulletBehaviour : NetworkBehaviour
                 ReflectBullet(other);
             }
         }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!IsServer || isTriggeredEnd)
+        {
+            return;
+        }
+
+
+        ProcessHit(other);
     }
 
     private void ReflectBullet(Collider collider)
@@ -85,14 +107,21 @@ public class BulletBehaviour : NetworkBehaviour
             Vector3 reflectDirection = Vector3.Reflect(ray.direction, hit.normal);
             transform.forward = reflectDirection;
         }
+        else if (Physics.Raycast(new Ray(transform.position - transform.forward * Time.deltaTime * 10, transform.forward), out hit, bulletSpeed * Time.deltaTime * 20, obstacleMask))
+        {
+            Vector3 reflectDirection = Vector3.Reflect(ray.direction, hit.normal);
+            transform.forward = reflectDirection;
+        }
     }
 
     public void DestroySelf()
     {
+        isTriggeredEnd = true;
         NetworkObject networkObject = GetComponent<NetworkObject>();
         if (networkObject != null)
         {
             networkObject.Despawn(); // 在服务器上销毁子弹，并在所有客户端上同步
+            Destroy(gameObject);
         }
     }
 }

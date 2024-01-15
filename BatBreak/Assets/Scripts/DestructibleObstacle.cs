@@ -8,7 +8,7 @@ public class DestructibleObstacle : NetworkBehaviour
     private int maxHealth;
     public GameObject destructionEffectPrefab; // 摧毁时的粒子特效预制体
     private Renderer objRenderer; // 对象的渲染器
-
+    private bool isDestoyed = false;
     void Start()
     {
         objRenderer = GetComponent<Renderer>();
@@ -50,6 +50,12 @@ public class DestructibleObstacle : NetworkBehaviour
 
     private void DestroySelf()
     {
+        if (isDestoyed)
+        {
+            return;
+        }
+
+        isDestoyed = true;
         NetworkObject networkObject = GetComponent<NetworkObject>();
         if (networkObject != null)
         {
