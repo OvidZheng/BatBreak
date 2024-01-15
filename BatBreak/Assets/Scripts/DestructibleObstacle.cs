@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class DestructibleObstacle : NetworkBehaviour
 {
-    public NetworkVariable<int> Health = new NetworkVariable<int>();
-    private int maxHealth;
+    private NetworkVariable<int> Health = new NetworkVariable<int>();
+    public int maxHealth;
     public GameObject destructionEffectPrefab; // 摧毁时的粒子特效预制体
     private Renderer objRenderer; // 对象的渲染器
     private bool isDestoyed = false;
     void Start()
     {
         objRenderer = GetComponent<Renderer>();
-        maxHealth = Health.Value; // 假设初始生命值是最大生命值
+        if (IsServer)
+        {
+            Health.Value = maxHealth; // 假设初始生命值是最大生命值
+        }
     }
     public void TakeDamage(int damage)
     {

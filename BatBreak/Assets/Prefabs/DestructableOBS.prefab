@@ -139,7 +139,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecdabbc44766fbb47a1b9348a4018de8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health:
-    m_InternalValue: 50
+  maxHealth: 150
   destructionEffectPrefab: {fileID: 499622386530047793, guid: 5848eeccb23be064892d04908e589217,
     type: 3}
