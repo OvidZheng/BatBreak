@@ -30,9 +30,13 @@ public class DestructibleObstacle : NetworkBehaviour
     private void UpdateMaterialColor()
     {
         float healthPercentage = (float)Health.Value / maxHealth;
-        Color newColor = Color.Lerp(Color.black, Color.white, healthPercentage); // 白色到黑色
+        Color minColor = new Color(0.2f, 0.2f, 0.2f); // 设定一个基础亮度，例如深灰色
+        Color maxColor = Color.white; // 最大生命值时的颜色为白色
+        Color newColor = Color.Lerp(maxColor, minColor, healthPercentage); // 从基础亮度到白色之间插值
         objRenderer.material.SetColor("_Color", newColor);
     }
+
+
 
     private void FixedUpdate()
     {

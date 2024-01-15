@@ -16,9 +16,11 @@ public class BattleBehavior : NetworkBehaviour
     private float nextBulletRecoveryTime = 0; // 下一次恢复子弹的时间
 
     public NetworkVariable<int> currentBullets = new NetworkVariable<int>(); // 当前子弹数
-    
+    public NetworkVariable<int> currentPower = new NetworkVariable<int>(); // 当前子弹数
+    public int maxPower = 30;
     public float clearRadius = 5.0f; // 清除子弹的范围半径
-    public int ClearbulletsToConsume = 1; // 消耗的子弹数
+    public int ClearPowerToConsume = 1; // 消耗的子弹数
+    public int PowerRestorePerBulletPassby;
     public GameObject clearEffectPrefab; // 清除效果的预制体
     public float effectDuration = 0.5f; // 效果持续时间
 
@@ -29,6 +31,7 @@ public class BattleBehavior : NetworkBehaviour
         if (IsServer)
         {
             currentBullets.Value = maxBullets; // 初始时满子弹
+            currentPower.Value = maxPower;
         }
     }
 
@@ -99,7 +102,7 @@ public class BattleBehavior : NetworkBehaviour
     [ServerRpc]
     void ClearBulletsInRangeServerRpc()
     {
-        if (!IsServer || currentBullets.Value < ClearbulletsToConsume) return;
+        if (!IsServer || currentPower.Value < ClearPowerToConsume) return;
 
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, clearRadius);
         foreach (var hitCollider in hitColliders)
@@ -110,7 +113,7 @@ public class BattleBehavior : NetworkBehaviour
                 bullet.DestroySelf();
             }
         }
-        currentBullets.Value -= ClearbulletsToConsume; // 消耗子弹
+        currentPower.Value -= ClearPowerToConsume; // 消耗子弹
         CreateClearEffectClientRpc();
     }
     
@@ -138,5 +141,14 @@ public class BattleBehavior : NetworkBehaviour
         }
 
         Destroy(effect);
+    }
+
+    public void AddPowerBulletPassby()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        currentPower.Value = Mathf.Min(maxPower, currentPower.Value + PowerRestorePerBulletPassby);
     }
 }

@@ -10,6 +10,9 @@ public class HUDController : NetworkBehaviour
     private PlayerBody _playerBody;
     public Image bulletsImage;
     public TextMeshProUGUI healthText;
+    
+    public Image powerImage; // 新的 UI 组件，用于显示功率
+    private int maxPower;
     private void Start()
     {
         if ((IsServer && !IsHost))
@@ -36,8 +39,11 @@ public class HUDController : NetworkBehaviour
         }
         if (playerBattleBehavior != null)
         {
+            maxPower = playerBattleBehavior.maxPower;
+            
             UpdateBulletsUI();
             UpdateHealthUI();
+            UpdatePowerUI(); // 更新功率显示
         }
         else
         {
@@ -59,5 +65,15 @@ public class HUDController : NetworkBehaviour
     {
         // 显示健康值
         healthText.text = "Health: " + _playerBody.Health.Value.ToString();
+    }
+    
+    private void UpdatePowerUI()
+    {
+        if (playerBattleBehavior != null)
+        {
+            int currentPower = playerBattleBehavior.currentPower.Value;
+            float powerPercentage = (float)currentPower / maxPower;
+            powerImage.fillAmount = powerPercentage; // 更新功率条的填充量
+        }
     }
 }

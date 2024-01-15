@@ -10,7 +10,8 @@ public class BulletBehaviour : NetworkBehaviour
     public int maxReflections = 3; // 子弹最多弹射的次数
 
     private int reflectionsCount = 0;// 当前子弹弹射的次数
-    private bool isTriggeredEnd = false;
+    private bool isDestroyed = false;
+    // private bool isTriggeredEnd = false;
 
     void Update()
     { 
@@ -37,20 +38,24 @@ public class BulletBehaviour : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsServer || isTriggeredEnd)
+        if (!IsServer || isDestroyed)
         {
             return;
         }
-        
         ProcessHit(other);
     }
+    
+    // private void OnTriggerStay(Collider other)
+    // {
+    //     if (!IsServer || isTriggeredEnd || isDestroyed)
+    //     {
+    //         return;
+    //     }
+    //     ProcessHit(other);
+    // }
 
     private void ProcessHit(Collider other)
     {
-        if (isTriggeredEnd)
-        {
-            return;
-        }
         // 检测是否命中玩家
         if ((playerMask.value & (1 << other.gameObject.layer)) > 0)
         {
@@ -85,16 +90,7 @@ public class BulletBehaviour : NetworkBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (!IsServer || isTriggeredEnd)
-        {
-            return;
-        }
 
-
-        ProcessHit(other);
-    }
 
     private void ReflectBullet(Collider collider)
     {
@@ -116,7 +112,7 @@ public class BulletBehaviour : NetworkBehaviour
 
     public void DestroySelf()
     {
-        isTriggeredEnd = true;
+        isDestroyed = true;
         NetworkObject networkObject = GetComponent<NetworkObject>();
         if (networkObject != null)
         {

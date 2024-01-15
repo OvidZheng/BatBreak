@@ -10,9 +10,7 @@ public class PlayerBody : NetworkBehaviour
     public NetworkVariable<int> Health = new NetworkVariable<int>(100);
     public NetworkVariable<int> markColorIndex = new NetworkVariable<int>(0); // 用于同步颜色的网络变量
     public List<Renderer> playerMarkRenderers; // 修改为Renderer的列表
-
-    
-    private Renderer playerRenderer; // Renderer to change the color of the player
+    public List<Renderer> playerHealthRenders;
 
 
     // 定义一个颜色数组
@@ -28,15 +26,7 @@ public class PlayerBody : NetworkBehaviour
         new Color(0.9f, 1.5f, 0.9f, 4), // 亮薄荷绿
         new Color(1.5f, 1.2f, 0.9f, 4) // 亮桃色
     };
-
-
-
-
-    private void Start()
-    {
-        // Get the Renderer component from the player game object
-        playerRenderer = GetComponent<Renderer>();
-    }
+    
 
     private void Update()
     {
@@ -83,7 +73,13 @@ public class PlayerBody : NetworkBehaviour
         // Map the health to a color value (green to red)
         float healthPercentage = Health.Value / 100f;
         Color playerHealthColor = Color.Lerp(Color.red, Color.green, healthPercentage);
-        playerRenderer.material.SetColor("_PlayerBaseColor", playerHealthColor);
+
+        foreach (Renderer r in playerHealthRenders)
+        {
+            r.material.SetColor("_PlayerBaseColor", playerHealthColor);
+        }
+        
+        
         Color playerMarkColor = playerColors[markColorIndex.Value];
         // 更新每个标记的颜色
         foreach (Renderer markRenderer in playerMarkRenderers)
