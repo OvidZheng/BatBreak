@@ -9,7 +9,7 @@ public class PlayerBody : NetworkBehaviour
 {
     public NetworkVariable<int> Health = new NetworkVariable<int>(100);
     public PlayerOutlookController playerOutlookController;
-
+    public BattleBehavior battleBehavior;
     // 定义一个颜色数组
     // 定义一个颜色数组
     private Color[] playerColors = new Color[] {
@@ -30,13 +30,17 @@ public class PlayerBody : NetworkBehaviour
         if (IsServer)
         {
             Health.Value -= damage;
-
+            
             if (Health.Value <= 0)
             {
                 Health.Value = 0;
                 // 玩家死亡的逻辑（例如重新生成等）
                 // GetComponent<NetworkObject>().Despawn();
                 // Destroy(gameObject);
+            }
+            else
+            {
+                battleBehavior.AddPowerBulletPassby();
             }
         }
 

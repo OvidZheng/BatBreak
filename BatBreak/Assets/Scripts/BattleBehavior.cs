@@ -11,6 +11,8 @@ public class BattleBehavior : NetworkBehaviour
     public GameObject bulletPrefab; // 子弹的预制体
     public Vector3 bulletPosOffset;
     public int maxBullets = 10; // 最大子弹数
+    public float fireRate = 5.0f; // 每秒最大射速
+
     public float bulletRecoveryRate = 1; // 每秒恢复的子弹数
     public NetworkVariable<bool> fireLock = new NetworkVariable<bool>(false);
     private float nextBulletRecoveryTime = 0; // 下一次恢复子弹的时间
@@ -26,6 +28,7 @@ public class BattleBehavior : NetworkBehaviour
     public PlayerOutlookController playerOutlookController;
     public int passbyFlashCount;
     public float passbyFlashDuration;
+    private float nextFireTime = 0.0f; // 下次允许射击的时间
 
     private void Start()
     {
@@ -38,22 +41,24 @@ public class BattleBehavior : NetworkBehaviour
 
     private void Update()
     {
-        if (fireLock.Value)
+        if (fireLock.Value || !IsOwner)
         {
             return;
         }
-        if (!IsOwner)
+        // 检查是否到达了可以射击的时间
+        if (Time.time > nextFireTime)
         {
-            return;
+            // 鼠标左键被按下
+            if (Input.GetMouseButton(0) && currentBullets.Value > 0)
+            {
+                FireBulletServerRpc();
+                nextFireTime = Time.time + 1 / fireRate;
+            }
         }
-            // 发射子弹
-        if (Input.GetKeyDown(KeyCode.J) && currentBullets.Value > 0)
-        {
-            FireBulletServerRpc();
-        }
+
         
         // 清空子弹
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetMouseButtonDown(1))
         {
             ClearBulletsInRangeServerRpc();
         }

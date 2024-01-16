@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1102410433
+  GlobalObjectIdHash: 3758087283
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -234,9 +234,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  rotateSpeed: 300
   moveLock:
     m_InternalValue: 0
+  rotateSpeed: 300
 --- !u!114 &-4891468249678743811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,6 +283,7 @@ MonoBehaviour:
     type: 3}
   bulletPosOffset: {x: 0, y: 0, z: 0.95}
   maxBullets: 30
+  fireRate: 10
   bulletRecoveryRate: 3
   fireLock:
     m_InternalValue: 0
@@ -293,7 +294,7 @@ MonoBehaviour:
   maxPower: 20
   clearRadius: 3
   ClearPowerToConsume: 7
-  PowerRestorePerBulletPassby: 1
+  PowerRestorePerBulletPassby: 2
   clearEffectPrefab: {fileID: 151808029338339143, guid: 58e510dd29b2de24bb14ffeaa574b7b8,
     type: 3}
   effectDuration: 0.2
