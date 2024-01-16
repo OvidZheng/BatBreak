@@ -55,7 +55,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f9b45a541240f5f46826430903a2e960, type: 2}
+  - {fileID: 2100000, guid: 346aae6a36829bc448d69d68f5389727, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -104,10 +104,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.7599961
+  m_Radius: 0.59951305
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: -0.0074070296, y: 0, z: 0}
 --- !u!114 &7950351602129970771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,6 +121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleBehavior: {fileID: 7446477866792639236}
+  playerOutlookController: {fileID: 2120153671535444799}
 --- !u!1 &2894143743748439085
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,6 +140,7 @@ GameObject:
   - component: {fileID: -6711687654130966179}
   - component: {fileID: 4720183478857235133}
   - component: {fileID: 6712322546719435720}
+  - component: {fileID: 2120153671535444799}
   m_Layer: 13
   m_Name: Player
   m_TagString: Untagged
@@ -231,7 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ffa322cdd28a344286dd06791d7541b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4.5
+  moveSpeed: 5
   rotateSpeed: 300
   moveLock:
     m_InternalValue: 0
@@ -279,9 +281,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 483271999745429859, guid: 88fe15341f040f04c95de36d72901cba,
     type: 3}
-  bulletPosOffset: {x: 0, y: 0, z: 0.88}
+  bulletPosOffset: {x: 0, y: 0, z: 0.95}
   maxBullets: 30
-  bulletRecoveryRate: 2
+  bulletRecoveryRate: 3
   fireLock:
     m_InternalValue: 0
   currentBullets:
@@ -295,6 +297,9 @@ MonoBehaviour:
   clearEffectPrefab: {fileID: 151808029338339143, guid: 58e510dd29b2de24bb14ffeaa574b7b8,
     type: 3}
   effectDuration: 0.2
+  playerOutlookController: {fileID: 2120153671535444799}
+  passbyFlashCount: 3
+  passbyFlashDuration: 0.25
 --- !u!114 &-6711687654130966179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,13 +326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health:
     m_InternalValue: 100
-  markColorIndex:
-    m_InternalValue: 0
-  playerMarkRenderers:
-  - {fileID: 1704004811074102018}
-  - {fileID: 839346259947396390}
-  playerHealthRenders:
-  - {fileID: 5775366655097188239}
+  playerOutlookController: {fileID: 2120153671535444799}
 --- !u!136 &6712322546719435720
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -351,6 +350,25 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.008240144, y: 0, z: 0}
+--- !u!114 &2120153671535444799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894143743748439085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2682e84919c88054899c8c648defa24d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  markColorIndex:
+    m_InternalValue: 0
+  playerMarkRenderers:
+  - {fileID: 1704004811074102018}
+  - {fileID: 839346259947396390}
+  playerHealthRenders:
+  - {fileID: 5775366655097188239}
 --- !u!1 &3106330885987232811
 GameObject:
   m_ObjectHideFlags: 0

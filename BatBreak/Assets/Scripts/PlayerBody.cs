@@ -8,10 +8,7 @@ using UnityEngine.Serialization;
 public class PlayerBody : NetworkBehaviour
 {
     public NetworkVariable<int> Health = new NetworkVariable<int>(100);
-    public NetworkVariable<int> markColorIndex = new NetworkVariable<int>(0); // 用于同步颜色的网络变量
-    public List<Renderer> playerMarkRenderers; // 修改为Renderer的列表
-    public List<Renderer> playerHealthRenders;
-
+    public PlayerOutlookController playerOutlookController;
 
     // 定义一个颜色数组
     // 定义一个颜色数组
@@ -27,15 +24,7 @@ public class PlayerBody : NetworkBehaviour
         new Color(1.5f, 1.2f, 0.9f, 4) // 亮桃色
     };
     
-
-    private void Update()
-    {
-        if (IsClient)
-        {
-            UpdatePlayerColor();
-        }
-    }
-
+    
     public void TakeDamage(int damage)
     {
         if (IsServer)
@@ -53,65 +42,4 @@ public class PlayerBody : NetworkBehaviour
 
     }
     
-    
-    [ServerRpc]
-    public void RequestChangeMarkColorServerRpc(ServerRpcParams rpcParams = default)
-    {
-        markColorIndex.Value = (markColorIndex.Value + 1) % playerColors.Length;
-        Debug.Log("change color index: " + markColorIndex.Value);
-    }
-    
-    [ServerRpc]
-    public void RequestChangeMarkColorSpecificServerRpc(int colorIndex, ServerRpcParams rpcParams = default)
-    {
-        markColorIndex.Value = colorIndex;
-    }
-
-
-    private void UpdatePlayerColor()
-    {
-        // Map the health to a color value (green to red)
-        float healthPercentage = Health.Value / 100f;
-        Color playerHealthColor = Color.Lerp(Color.red, Color.green, healthPercentage);
-
-        foreach (Renderer r in playerHealthRenders)
-        {
-            r.material.SetColor("_PlayerBaseColor", playerHealthColor);
-        }
-        
-        
-        Color playerMarkColor = playerColors[markColorIndex.Value];
-        // 更新每个标记的颜色
-        foreach (Renderer markRenderer in playerMarkRenderers)
-        {
-            markRenderer.material.SetColor("_PlayerBaseColor", playerMarkColor);
-        }
-    }
-    
-    private void OnEnable()
-    {
-        NetworkManagerUI.OnColorChangeRequested += HandleColorChange;
-    }
-
-    private void OnDisable()
-    {
-        NetworkManagerUI.OnColorChangeRequested -= HandleColorChange;
-    }
-    
-    private void HandleColorChange()
-    {
-        if (IsOwner) // 确保只有当前客户端的玩家执行这个操作
-        {
-            RequestChangeColor();
-        }
-    }
-
-    public void RequestChangeColor()
-    {
-        if (IsClient)
-        {
-            // 请求服务器更改颜色
-            RequestChangeMarkColorServerRpc();
-        }
-    }
 }

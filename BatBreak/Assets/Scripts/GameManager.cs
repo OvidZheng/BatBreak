@@ -131,7 +131,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach (Player sp in players)
         {
-            sp.markColorIndex = sp.playerBody.markColorIndex.Value;
+            sp.markColorIndex = sp.playerBody.playerOutlookController.markColorIndex.Value;
         }
     }
 
@@ -238,7 +238,7 @@ public class Player
         playerBody = playerGB.GetComponent<PlayerBody>();
         BattleBehavior = playerGB.GetComponent<BattleBehavior>();
 
-        playerBody.markColorIndex.Value = markColorIndex;
+        playerBody.playerOutlookController.markColorIndex.Value = markColorIndex;
     }
 
     // 玩家死亡逻辑

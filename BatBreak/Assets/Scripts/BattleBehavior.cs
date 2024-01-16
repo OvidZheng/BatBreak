@@ -23,9 +23,10 @@ public class BattleBehavior : NetworkBehaviour
     public int PowerRestorePerBulletPassby;
     public GameObject clearEffectPrefab; // 清除效果的预制体
     public float effectDuration = 0.5f; // 效果持续时间
+    public PlayerOutlookController playerOutlookController;
+    public int passbyFlashCount;
+    public float passbyFlashDuration;
 
-
-    
     private void Start()
     {
         if (IsServer)
@@ -150,5 +151,12 @@ public class BattleBehavior : NetworkBehaviour
             return;
         }
         currentPower.Value = Mathf.Min(maxPower, currentPower.Value + PowerRestorePerBulletPassby);
+        CreateAddPowerEffectClientRpc();
+    }
+    
+    [ClientRpc]
+    void CreateAddPowerEffectClientRpc()
+    {
+        playerOutlookController.PlayerHealthRendererFlash(passbyFlashDuration ,passbyFlashCount);
     }
 }
