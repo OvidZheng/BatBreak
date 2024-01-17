@@ -43,8 +43,8 @@ public class PlayerOutlookController : NetworkBehaviour
         {
             return;
         }
-        float healthPercentage = playerBody.Health.Value / 100f;
-        Color playerHealthColor = Color.Lerp(Color.red, Color.green, healthPercentage);
+        float healthPercentage = (float)playerBody.Health.Value / (float)playerBody.maxHealth;
+        Color playerHealthColor = Color.Lerp(Color.red, Color.green, Mathf.Min(healthPercentage, 1f));
 
         foreach (Renderer r in playerHealthRenders)
         {

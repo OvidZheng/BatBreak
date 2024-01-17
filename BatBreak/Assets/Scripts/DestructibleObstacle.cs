@@ -9,6 +9,10 @@ public class DestructibleObstacle : NetworkBehaviour
     public GameObject destructionEffectPrefab; // 摧毁时的粒子特效预制体
     private Renderer objRenderer; // 对象的渲染器
     private bool isDestoyed = false;
+    public GameObject[] pickableItemPrefabs; // 可拾取物品预制体的公共列表
+    public float itemSpawnProbability = 0.5f; // 生成物品的概率（0到1之间）
+
+
     void Start()
     {
         objRenderer = GetComponent<Renderer>();
@@ -17,15 +21,20 @@ public class DestructibleObstacle : NetworkBehaviour
             Health.Value = maxHealth; // 假设初始生命值是最大生命值
         }
     }
+
     public void TakeDamage(int damage)
     {
         if (!IsServer) return;
 
         Health.Value -= damage;
-        
-        if (Health.Value <= 0)
+
+        if (Health.Value <= 0 && !isDestoyed)
         {
             PlayDestructionEffectClientRpc();
+            if (UnityEngine.Random.value < itemSpawnProbability) // 使用概率判断是否生成物品
+            {
+                SpawnPickableItem(); // 在所有客户端生成可拾取物品
+            }
             DestroySelf();
         }
     }
@@ -52,6 +61,20 @@ public class DestructibleObstacle : NetworkBehaviour
         if (destructionEffectPrefab != null)
         {
             Instantiate(destructionEffectPrefab, transform.position, Quaternion.identity);
+        }
+    }
+    
+    private void SpawnPickableItem()
+    {
+        if (pickableItemPrefabs.Length > 0)
+        {
+            int index = UnityEngine.Random.Range(0, pickableItemPrefabs.Length);
+            GameObject item = Instantiate(pickableItemPrefabs[index], transform.position, Quaternion.identity);
+            NetworkObject networkItem = item.GetComponent<NetworkObject>();
+            if (networkItem != null)
+            {
+                networkItem.Spawn(); // 网络实例化物品
+            }
         }
     }
 

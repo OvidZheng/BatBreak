@@ -10,8 +10,15 @@ public class PlayerBody : NetworkBehaviour
     public NetworkVariable<int> Health = new NetworkVariable<int>(100);
     public PlayerOutlookController playerOutlookController;
     public BattleBehavior battleBehavior;
+    public int maxHealth = 100;
 
-
+    private void Start()
+    {
+        if (IsServer)
+        {
+            Health.Value = maxHealth;
+        }
+    }
 
     public void TakeDamage(int damage)
     {
@@ -32,6 +39,15 @@ public class PlayerBody : NetworkBehaviour
             }
         }
 
+    }
+    
+    public void Heal(int amount)
+    {
+        if (IsServer)
+        {
+            playerOutlookController.PlayerHealthRendererFlash(0.25f, 3);
+            Health.Value += amount;
+        }
     }
     
 }

@@ -20,8 +20,8 @@ public class GameManager : NetworkBehaviour
     [Range(0f, 1f)] public float DestructableObjProbability = 0.5f;
     private List<Player> players = new List<Player>(); // 假设有一个Player类来代表玩家
     private List<DestructibleObstacleInfo> destructibleObstacles = new List<DestructibleObstacleInfo>();
-   
-    
+    private bool isWaitReset = false;
+
 
     private void Awake()
     {
@@ -138,7 +138,7 @@ public class GameManager : NetworkBehaviour
     // 检查所有玩家是否都已死亡
     private void CheckAndResetGame()
     {
-        if (players.Count <= 0)
+        if (players.Count <= 0 || isWaitReset)
         {
             return;
         }
@@ -183,7 +183,39 @@ public class GameManager : NetworkBehaviour
     }
 
     // 重置游戏
+    // private void ResetGame()
+    // {
+    //     // 重置游戏逻辑，例如重生玩家、重置环境等
+    //     foreach (var player in players)
+    //     {
+    //         DeSpawnPlayer(player);
+    //         GameObject newPlayerObj = SpawnPlayerObj();
+    //         player.playerGB = newPlayerObj;
+    //         player.Born(); // 假设玩家对象有一个Respawn方法
+    //     }
+    //
+    //     ResetDestructibleObstacles();
+    //     ResetFirstAidKits();
+    //     OnGameReset?.Invoke();
+    //     // 任何其他需要的重置逻辑
+    // }
+    
     private void ResetGame()
+    {
+        isWaitReset = true;
+        StartCoroutine(ResetGameAfterDelay(3f)); // 在重置游戏前等待5秒
+    }
+    
+    // 协程，用于延迟重置游戏
+    private IEnumerator ResetGameAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay); // 等待指定的秒数
+        PerformGameReset(); // 然后执行游戏重置
+        isWaitReset = false;
+    }
+    
+    // 新方法，包含重置游戏的实际逻辑
+    private void PerformGameReset()
     {
         // 重置游戏逻辑，例如重生玩家、重置环境等
         foreach (var player in players)
@@ -195,8 +227,8 @@ public class GameManager : NetworkBehaviour
         }
 
         ResetDestructibleObstacles();
+        ResetFirstAidKits();
         OnGameReset?.Invoke();
-
         // 任何其他需要的重置逻辑
     }
 
@@ -215,6 +247,23 @@ public class GameManager : NetworkBehaviour
 
         InitializeDestructibleObstacles();
     }
+    
+    private void ResetFirstAidKits()
+    {
+        // 销毁现有的FirstAidKit物品
+        foreach (var firstAidKit in FindObjectsOfType<FirstAidKit>())
+        {
+            NetworkObject networkObject = firstAidKit.GetComponent<NetworkObject>();
+            if (networkObject != null && networkObject.IsSpawned)
+            {
+                networkObject.Despawn(); // 在服务器上销毁FirstAidKit，并在所有客户端上同步
+                Destroy(firstAidKit.gameObject);
+            }
+        }
+
+        // 这里可以添加初始化FirstAidKit的逻辑，如果需要的话
+    }
+
 }
 
 public class Player

@@ -30,7 +30,7 @@ public class MovePlayer : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (IsOwner)
+        if (IsOwner && !moveLock.Value)
         {
             Move();
             RotateTowardsMouse();
