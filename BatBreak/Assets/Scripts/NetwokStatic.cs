@@ -7,6 +7,7 @@ public class NetworkStatic : NetworkBehaviour
     public static NetworkStatic Instance { get; private set; }
 
     public Transform playertrTransform;
+    public PlayerOutlookController playerOutlookController;
 
     private void Awake()
     {
@@ -40,6 +41,7 @@ public class NetworkStatic : NetworkBehaviour
             if (player.IsLocalPlayer)
             {
                 playertrTransform = player.transform; // 修改这里获取GameObject的方式
+                playerOutlookController = playertrTransform.GetComponent<PlayerOutlookController>();
                 break;
             }
         }

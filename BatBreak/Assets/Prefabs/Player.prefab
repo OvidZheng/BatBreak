@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3758087283
+  GlobalObjectIdHash: 1102410433
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -283,7 +283,7 @@ MonoBehaviour:
     type: 3}
   bulletPosOffset: {x: 0, y: 0, z: 0.95}
   maxBullets: 30
-  fireRate: 10
+  fireRate: 15
   bulletRecoveryRate: 3
   fireLock:
     m_InternalValue: 0
@@ -328,6 +328,7 @@ MonoBehaviour:
   Health:
     m_InternalValue: 100
   playerOutlookController: {fileID: 2120153671535444799}
+  battleBehavior: {fileID: 7446477866792639236}
 --- !u!136 &6712322546719435720
 CapsuleCollider:
   m_ObjectHideFlags: 0

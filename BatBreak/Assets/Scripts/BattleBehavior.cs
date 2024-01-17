@@ -92,10 +92,12 @@ public class BattleBehavior : NetworkBehaviour
         {
             GameObject bullet = Instantiate(bulletPrefab, transform.TransformPoint(bulletPosOffset), transform.rotation);
             NetworkObject bulletNetworkObject = bullet.GetComponent<NetworkObject>();
+            BulletBody bulletBody = bullet.GetComponent<BulletBody>();
 
-            if (bulletNetworkObject != null)
+            if (bulletNetworkObject != null && bulletBody != null)
             {
                 bulletNetworkObject.Spawn();
+                bulletBody.markColorIndex.Value = playerOutlookController.markColorIndex.Value;
                 currentBullets.Value--; // 射击后减少子弹
             }
             else
