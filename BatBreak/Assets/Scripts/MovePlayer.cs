@@ -9,6 +9,10 @@ public class MovePlayer : NetworkBehaviour
     
     private Rigidbody rb;
     private Vector3 movementInput;
+    
+    // 定义矩形边界的两个对角点
+    public Vector3 boundaryPoint1 = new Vector3(-10.0f, 0, -10.0f);
+    public Vector3 boundaryPoint2 = new Vector3(10.0f, 0, 10.0f);
 
     void Start()
     {
@@ -34,6 +38,7 @@ public class MovePlayer : NetworkBehaviour
         {
             Move();
             RotateTowardsMouse();
+            CheckBoundary(); // 检查边界
         }
     }
 
@@ -69,5 +74,43 @@ public class MovePlayer : NetworkBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(directionToMouse);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotateSpeed * Time.fixedDeltaTime));
         }
+    }
+    
+    // 检查并处理边界情况
+    void CheckBoundary()
+    {
+        // 计算边界值
+        float  minX = Mathf.Min(boundaryPoint1.x, boundaryPoint2.x);
+        float maxX = Mathf.Max(boundaryPoint1.x, boundaryPoint2.x);
+        float minZ = Mathf.Min(boundaryPoint1.z, boundaryPoint2.z);
+        float maxZ = Mathf.Max(boundaryPoint1.z, boundaryPoint2.z);
+        Vector3 position = rb.position;
+
+        if (position.x > maxX)
+        {
+            position.x = minX + 1;
+        }
+        else if (position.x < minX)
+        {
+            position.x = maxX - 1;
+        }
+
+        if (position.z > maxZ)
+        {
+            position.z = minZ + 1;
+        }
+        else if (position.z < minZ)
+        {
+            position.z = maxZ - 1;
+        }
+        ResetForces();
+        rb.position = position;
+        
+    }
+    
+    void ResetForces()
+    {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 }
