@@ -8,7 +8,7 @@ namespace BehaviourTree.Task.Action
     {
         public SharedGameObject targetObject; // 目标游戏对象
         public float rotationSpeed = 2.0f; // 旋转速度
-
+        private UnityEngine.AI.NavMeshAgent navMeshAgent;
         public override TaskStatus OnUpdate()
         {
             if (targetObject.Value == null)

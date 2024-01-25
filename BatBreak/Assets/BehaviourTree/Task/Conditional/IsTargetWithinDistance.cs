@@ -47,7 +47,7 @@ namespace BehaviourTree.Task.Conditional
         
         
         // 在编辑器中绘制检测范围
-        void OnDrawGizmos()
+        public override void OnDrawGizmos()
         {
             if (targetGameObject == null || targetGameObject.Value == null)
             {
