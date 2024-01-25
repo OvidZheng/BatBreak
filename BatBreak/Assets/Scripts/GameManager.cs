@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.AI.Navigation;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,11 +17,14 @@ public class GameManager : NetworkBehaviour
     public List<Transform> destructableObjectsTransforms;
     public Transform[] spawnPoints;
     public GameObject playerPrefab;
+    public NavMeshSurface navMeshSurface;
     public static GameManager Instance { get; private set; }
     [Range(0f, 1f)] public float DestructableObjProbability = 0.5f;
     private List<Player> players = new List<Player>(); // 假设有一个Player类来代表玩家
     private List<DestructibleObstacleInfo> destructibleObstacles = new List<DestructibleObstacleInfo>();
     private bool isWaitReset = false;
+    private int previousDestructibleObjectCount = 0; // 用于存储先前的可摧毁物体数量
+
 
 
     private void Awake()
@@ -47,6 +51,7 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             InitializeDestructibleObstacles();
+            navMeshSurface.BuildNavMesh();
         }
     }
 
@@ -124,6 +129,7 @@ public class GameManager : NetworkBehaviour
         {
             CheckAndResetGame();
             CachePlayerInfo();
+            CheckAndRebuildNavMesh();
         }
     }
 
@@ -181,24 +187,20 @@ public class GameManager : NetworkBehaviour
             destructibleObstacles.Add(info);
         }
     }
+    
+    
+    private void CheckAndRebuildNavMesh()
+    {
+        int currentDestructibleObjectCount = FindObjectsOfType<DestructibleObstacle>().Length;
 
-    // 重置游戏
-    // private void ResetGame()
-    // {
-    //     // 重置游戏逻辑，例如重生玩家、重置环境等
-    //     foreach (var player in players)
-    //     {
-    //         DeSpawnPlayer(player);
-    //         GameObject newPlayerObj = SpawnPlayerObj();
-    //         player.playerGB = newPlayerObj;
-    //         player.Born(); // 假设玩家对象有一个Respawn方法
-    //     }
-    //
-    //     ResetDestructibleObstacles();
-    //     ResetFirstAidKits();
-    //     OnGameReset?.Invoke();
-    //     // 任何其他需要的重置逻辑
-    // }
+        // 如果可摧毁物体的数量发生了变化
+        if (currentDestructibleObjectCount != previousDestructibleObjectCount)
+        {
+            navMeshSurface.BuildNavMesh(); // 重新烘焙 NavMesh
+            previousDestructibleObjectCount = currentDestructibleObjectCount; // 更新计数器
+        }
+    }
+    
     
     private void ResetGame()
     {
