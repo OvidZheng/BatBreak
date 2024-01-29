@@ -18,6 +18,7 @@ public class  NetworkManagerUI : MonoBehaviour
     [SerializeField] private Button clientButton;
     [SerializeField] private Button localserverButton;
     [SerializeField] private Button localclientButton;
+    [SerializeField] private Button localHostButton;
     [SerializeField] private Button changeColorButton;
     public string localServerIPAddress ="127.0.0.1";
     
@@ -55,6 +56,13 @@ public class  NetworkManagerUI : MonoBehaviour
         {
             OnColorChangeRequested.Invoke();
         })));
+        localHostButton.onClick.AddListener(() =>
+        {
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(localServerIPAddress, 7777);
+            // GameManager.Instance.ClientInitGame();
+            NetworkManager.Singleton.StartHost();
+            GameManager.Instance.ServerInitGame();
+        });
     }
 }
 
